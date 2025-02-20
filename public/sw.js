@@ -1,9 +1,8 @@
 importScripts(
-		'https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js'
+		'https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js',
 );
-const {setDefaultHandler} = workbox.routing
-const {NetworkFirst} = workbox.strategies
-const {offlineFallback} = workbox.recipes;
+
+const {NetworkFirst} = workbox.strategies;
 
 self.addEventListener('install', (event) => {
 	console.info('SW: install');
@@ -15,6 +14,18 @@ self.addEventListener('activate', (event) => {
 	event.waitUntil(self.clients.claim());
 });
 
-setDefaultHandler(new NetworkFirst());
+self.addEventListener('fetch', async (event) => {
+	console.info('SW: fetch');
 
-offlineFallback();
+	const request = event.request;
+
+	// Si l'url de la requete provient d'une extension chrome
+	if(request.url.includes('chrome-extension')){
+		// renvoie le résultat de notre requete
+		return await fetch(event.request);
+	}
+	
+	const networkFirst = new NetworkFirst();
+	event.respondWith(networkFirst.handle({event, request}));
+	
+});
