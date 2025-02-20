@@ -1,18 +1,31 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Lit</title>
-    <link rel="stylesheet" href="./src/index.css" />
-    <script type="module" src="/src/my-router.js"></script>
-    <script type="module" src="/src/apercu-livre.js"></script>
-    <script type="module" src="/src/liste-livre.js"></script>
-    <script type="module" src="/src/detail-livre.js"></script>
-  </head>
-  <body>
-    <my-router>
-    </my-router>
-  </body>
+		<head>
+				<meta charset="UTF-8" />
+				<link href="/vite.svg" rel="icon" type="image/svg+xml" />
+				<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+				<title>Vite + Lit</title>
+				<link href="./src/index.css" rel="stylesheet" />
+				<script src="/src/my-router.js" type="module"></script>
+				<script src="/src/apercu-livre.js" type="module"></script>
+				<script src="/src/liste-livre.js" type="module"></script>
+				<script src="/src/detail-livre.js" type="module"></script>
+		</head>
+		<body>
+				<my-router>
+				</my-router>
+		</body>
+
+		<script>
+				window.addEventListener('load', () => {
+						if ('serviceWorker' in navigator) {
+								navigator.serviceWorker.register('/sw.js').then(() => {
+										console.log('Service worker registered!');
+								}).catch((error) => {
+										console.warn('Error registering service worker:');
+										console.warn(error);
+								});
+						}
+				});
+		</script>
 </html>
