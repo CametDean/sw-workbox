@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "cy:open": "cypress open"
+    "cy:open": "npm run build && npx http-server ./dist & cypress open"
   },
   "dependencies": {
     "@lit-labs/router": "^0.1.3",

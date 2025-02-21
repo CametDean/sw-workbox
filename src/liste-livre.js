@@ -13,6 +13,7 @@ export class ListeLivre extends LitElement {
             listeLivres: Array,
             listeLivreTrouve: Array,
             searchedValue: Object,
+            error: Error,
         }
     }
 
@@ -24,12 +25,22 @@ export class ListeLivre extends LitElement {
     }
 
     async getLivres() {
-        const resultBrut = await fetch('https://cms-headless-core.ln1.eu/livres')
-        return await resultBrut.json()
+        try{
+            const resultBrut = await fetch('https://cms-headless-core.ln1.eu/livres')
+            return await resultBrut.json()
+        } catch (e) {
+           throw new Error(e.message)
+        }
     }
 
     async _onClick() {
-        this.listeLivres = await this.getLivres()
+        try {
+            this.error = null
+            this.listeLivres = await this.getLivres()
+        } catch (e) {
+            console.log(e)
+            this.error = e
+        }
     }
 
     async rechercheLivre(livreSepareParDesEspaces) {
@@ -57,7 +68,10 @@ export class ListeLivre extends LitElement {
                     ${JSON.stringify(this.listeLivreTrouve)}
                 </div>
             </div>
-            <button @click=${this._onClick}>Télécharger la liste des livres</button>
+            <button id="telecharger-livres" @click=${this._onClick}>Télécharger la liste des livres</button>
+            <p>
+                ${this.error && this.error.message}
+            </p>
             <ul>
                 ${this.listeLivres && this.listeLivres.status !== 'KO' && this.listeLivres.map((livre) =>
                         html`
