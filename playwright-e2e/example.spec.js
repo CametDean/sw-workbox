@@ -19,12 +19,12 @@ test.describe('Tests avec Playwright', () => {
       await page.goto('https://pwa.ln1.eu/');
 
       await expect(page.getByRole('heading', { name: 'Welcome to BookVerse' })).toBeVisible();
-      
+
       // Simule le mode hors-ligne
       await context.setOffline(true);
       
       await page.reload();
-
+      
       await expect(page.getByRole('heading', { name: 'Welcome to BookVerse' })).toBeVisible();
 
       // Clique sur le bouton
