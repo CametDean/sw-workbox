@@ -56,7 +56,7 @@ export class ListeLivre extends LitElement {
     
     render() {
         return html`
-            <h1>Ma liste des livres</h1>
+            <h1>Ma liste de livres</h1>
             <div>
                 <form action="" method="post" @submit=${this._onSearch}>
                     <label for="recherche-livre">Rechercher un livre</label>
