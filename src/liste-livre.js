@@ -68,7 +68,7 @@ export class ListeLivre extends LitElement {
                     ${JSON.stringify(this.listeLivreTrouve)}
                 </div>
             </div>
-            <button id="telecharger-livres" @click=${this._onClick}>Télécharger la liste des livres</button>
+            <button id="telecharger-livres" @click=${this._onClick}>Télécharger la liste de livres</button>
             <p>
                 ${this.error && this.error.message}
             </p>
