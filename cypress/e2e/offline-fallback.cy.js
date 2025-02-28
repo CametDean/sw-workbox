@@ -1,17 +1,4 @@
-const goOffline = () => {
-	cy.log('**go offline**')
-	cy.intercept('*', request => {
-		request.destroy();
-	});
-};
-const goOnline = () => {
-	cy.log('**go online**')
-	cy.intercept('*', request => {
-		request.continue();
-	});
-};
-
-const goOfflineMode = () => {
+export const goOffline = () => {
 	cy.log('**go offline**')
 	.then(() => {
 		return Cypress.automation('remote:debugger:protocol',
@@ -33,31 +20,51 @@ const goOfflineMode = () => {
 	})
 }
 
+export const goOnline = () => {
+	cy.log('**go offline**')
+	.then(() => {
+		return Cypress.automation('remote:debugger:protocol',
+				{
+					command: 'Network.emulateNetworkConditions',
+					params: {
+						offline: false,
+						latency: -1,
+						downloadThroughput: -1,
+						uploadThroughput: -1,
+					},
+				})
+	.then(() => {
+		return Cypress.automation('remote:debugger:protocol',
+				{
+					command: 'Network.disable',
+				})
+	})
+	})
+}
+
+export const assertOffline = () => {
+	return cy.wrap(window).its('navigator.onLine').should('be.false')
+}
+
+export const assertOnline = () => {
+	return cy.wrap(window).its('navigator.onLine').should('be.true')
+}
+
 describe('Page de fallback en mode hors-ligne', () => {
 
-	it.skip('Affiche la page offline.html quand on passe en mode hors-ligne et que la page est rechargée', () => {
-
-		cy.visit('/', {
-			onLoad(win) {
-				win.caches.open("workbox-offline-fallbacks").then((cache) => {
-					cache.add('/offline.html')
-				});
-			},
-		}).wait(1000);
-		
-		//goOfflineMode();
-
-		goOffline()
+	it('Affiche la page offline.html quand on passe en mode hors-ligne et que la page est rechargée', () => {
 
 		cy.visit('/');
 		
-		cy.contains('Vous êtes hors-ligne');
+		goOffline()
 
-		//goOnline();
+		assertOffline();
 
-		//cy.visit('/');
-
+		cy.get('my-router').shadow().find('liste-livre').shadow().find('#telecharger-livres').click();
+		cy.contains('Failed to fetch');
+		
 		//cy.contains('Ma liste des livres');
+		//cy.contains('Vous êtes hors-ligne');
 	});
 	
 });

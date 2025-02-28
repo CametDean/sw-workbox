@@ -1,13 +1,24 @@
+import {
+	assertOffline,
+	assertOnline,
+} from './offline-fallback.cy';
+
 const goOffline = () => {
+	cy.log('**go offline**')
 	cy.intercept('*', request => {
 		request.destroy();
 	});
 };
 const goOnline = () => {
+	cy.log('**go online**')
 	cy.intercept('*', request => {
 		request.continue();
 	});
 };
+
+const getListeLivre = () => {
+	return cy.get('my-router').shadow().find('liste-livre').shadow();
+}
 
 describe('Stratégie de cache Stale While Revalidate', () => {
 
@@ -24,23 +35,25 @@ describe('Stratégie de cache Stale While Revalidate', () => {
 		});
 
 		goOffline();
-
-		cy.get('#telecharger-livres').click();
-		cy.contains('Failed to fetch');
+		
+		getListeLivre().find('#telecharger-livres').click();
+		getListeLivre().contains('Failed to fetch');
 
 		goOnline();
 
-		cy.get('#telecharger-livres').click();
-		cy.contains('Culture code');
-		cy.contains('Harry Potter');
+		getListeLivre().find('#telecharger-livres').click();
+		getListeLivre().find('apercu-livre').shadow().contains('Culture code');
+		getListeLivre().find('apercu-livre').shadow().contains('Harry Potter');
 
 		cy.visit('/');
 
 		goOffline();
 
-		cy.get('#telecharger-livres').click();
-		cy.contains('Culture code');
-		cy.contains('Harry Potter');
+		assertOffline()
+
+		getListeLivre().find('#telecharger-livres').click();
+		getListeLivre().find('apercu-livre').shadow().contains('Culture code');
+		getListeLivre().find('apercu-livre').shadow().contains('Harry Potter');
 	});
 
 });
