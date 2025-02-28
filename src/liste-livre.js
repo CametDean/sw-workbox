@@ -69,7 +69,7 @@ export class ListeLivre extends LitElement {
                 </div>
             </div>
             <button id="telecharger-livres" @click=${this._onClick}>Télécharger la liste de livres</button>
-            <p>
+            <p data-testId="error-message">
                 ${this.error && this.error.message}
             </p>
             <ul>

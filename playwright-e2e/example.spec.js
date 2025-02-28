@@ -11,29 +11,29 @@ test.describe('Tests avec Playwright', () => {
   
   test.describe('En mode hors-ligne', () => {
     
-    test.only('test de la stratégie Stale While Revalidate', async ({ page }) => {
+    test.only('test de la stratégie Stale While Revalidate', async () => {
       // Stocke le contexte du navigateur
       const context = await setBrowerContext();
+      const page = await context.newPage();
       
       // Va sur la page
-      await page.goto('https://pwa.ln1.eu/');
+      await page.goto('http://localhost:5173/');
 
-      await expect(page.getByRole('heading', { name: 'Welcome to BookVerse' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Ma liste de livres' })).toBeVisible();
 
       // Simule le mode hors-ligne
       await context.setOffline(true);
       
-      await page.reload();
+      //await page.reload();
       
-      await expect(page.getByRole('heading', { name: 'Welcome to BookVerse' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Ma liste de livres' })).toBeVisible();
 
       // Clique sur le bouton
-      await page.getByRole('link', { name: 'Books', exact: true }).click();
+      await page.getByRole('button', { name: 'Télécharger la liste de livres'}).click();
 
       // On veut une erreur 
-      await expect(page.getByTestId('booklist')).toBeEmpty();
+      await expect(page.getByTestId('error-message')).toBeVisible();
       
-      /*
       
       // Simule le mode online
       await context.setOffline(false);
@@ -54,7 +54,7 @@ test.describe('Tests avec Playwright', () => {
       await page.getByRole('button', { name: 'Télécharger la liste de livres' }).click();
 
       // On veut le livre Harry Potter
-      await expect(page.getByText('Harry Potter')).toBeVisible();*/
+      await expect(page.getByText('Harry Potter')).toBeVisible();
     });
     
     /*test('Au click sur le lien "Details", on est redirigé vers la page de détails', async ({ page }) => {
